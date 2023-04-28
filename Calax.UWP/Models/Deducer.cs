@@ -13,7 +13,7 @@ namespace Calax.UWP.Models
 
         public double Deduce(double gti, double td)
         {
-            double currentGTI = gti;
+            double currentGTI = gti-td;
             double calculatedTax = 0;
             bool isExceded = false;
             int slabIndex = 0;
@@ -26,11 +26,10 @@ namespace Calax.UWP.Models
                     currentGTI -= (double)SlabSet.Slabs[slabIndex].Range.Difference;
                     slabIndex++;
                 }
-                else if (currentGTI < (double)SlabSet.Slabs[slabIndex].Range.Start)
+                else
                 {
                     calculatedTax += currentGTI * SlabSet.Slabs[slabIndex].Percent; isExceded = true;
                 }
-                else isExceded = true;
             }
             return calculatedTax;
         }

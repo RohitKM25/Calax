@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    FontFamily="Consolas"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     Background="{ThemeResource SystemControlAcrylicWindowBrush}">
     <Grid>
         <Grid.RowDefinitions>
@@ -31,17 +31,27 @@
                VerticalAlignment="Center"
                Margin="28,0,0,0"/>
         </Grid>
-        <StackPanel Grid.Row="1">
+        <muxc:NavigationView Grid.Row="1" PaneDisplayMode="LeftCompact" IsBackButtonVisible="Collapsed" Header="{x:Bind ViewModel.NavigationHeader,Mode=OneWay}" x:Name="MainNavigationView" SelectionChanged="_mainNavigationView_SelectionChanged">
+            <muxc:NavigationView.MenuItems>
+                <muxc:NavigationViewItem Content="Calculator" Tag="Calculator" Icon="Calculator" />
+                <muxc:NavigationViewItem Content="Slab Sets" Tag="Slab Sets" Icon="Library" />
+                <muxc:NavigationViewItem Content="New Slab Set" Tag="New Slab Set" Icon="Add" />
+            </muxc:NavigationView.MenuItems>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Frame x:Name="NavigationViewContentFrame" NavigationFailed="_navigationViewContentFrame_NavigationFailed"/>
+            </ScrollViewer>
+        </muxc:NavigationView>
+        <!--<StackPanel Grid.Row="1">
             <StackPanel Padding="24" Spacing="16">
                 <TextBlock Text="Income Tax Calculator" FontSize="24"/>
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <TextBlock Text="For Year" VerticalAlignment="Center"/>
-                    <ComboBox MinWidth="300" HorizontalAlignment="Stretch" ItemsSource="{x:Bind ViewModel.FYs}">
+                    <ComboBox MinWidth="300" HorizontalAlignment="Stretch" IsEnabled="{Binding IsForYearComboBoxEnabled}" SelectedItem="{x:Bind SelectedForYear,Mode=TwoWay}" ItemsSource="{Binding ForYears}">
                     </ComboBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <TextBlock Text="Regime" VerticalAlignment="Center"/>
-                    <ComboBox MinWidth="300" HorizontalAlignment="Stretch" x:Name="RegimeComboBox">
+                    <ComboBox MinWidth="300" HorizontalAlignment="Stretch" IsEnabled="{Binding IsRegimesComboBoxEnabled}" SelectedItem="{x:Bind SelectedRegime,Mode=TwoWay}" ItemsSource="{Binding Regimes}">
                         <ComboBox.Items>
                             <ComboBoxItem Content="Old"/>
                             <ComboBoxItem Content="New"/>
@@ -50,7 +60,7 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <TextBlock Text="Gross Total Income" VerticalAlignment="Center"/>
-                    <muxc:NumberBox MinWidth="300" Minimum="0"   HorizontalAlignment="Stretch" x:Name="GTINumberBox"/>
+                    <muxc:NumberBox MinWidth="300" Minimum="0"  Value="{x:Bind TotalGrossIncome,Mode=TwoWay}"  HorizontalAlignment="Stretch" x:Name="GTINumberBox"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <TextBlock Text="Total Deduction" VerticalAlignment="Center"/>
@@ -68,7 +78,7 @@
                 <TextBlock Text="Settings" FontSize="24"/>
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <TextBlock Text="Tax Slabs Folder" VerticalAlignment="Center"/>
-                    <TextBox MinWidth="300" Text="{x:Bind ViewModel.SlabSetsFolderPath}"/>
+                    <TextBlock MinWidth="300" VerticalAlignment="Center" Text="{Binding SlabSetsFolderPath}"/>
                     <Button Click="_slabSetsFolderChooseFolderButton_Click">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <SymbolIcon Symbol="OpenLocal"/>
@@ -77,6 +87,6 @@
                     </Button>
                 </StackPanel>
             </StackPanel>
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </Page>

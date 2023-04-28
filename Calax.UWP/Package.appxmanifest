@@ -9,8 +9,8 @@
 
   <Identity
     Name="29354646-0b0d-4e08-a975-ac5afc1b1e00"
-    Publisher="CN=Admin"
-    Version="1.0.0.0" />
+    Publisher="CN=Rohit K Manoj"
+    Version="1.1.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="29354646-0b0d-4e08-a975-ac5afc1b1e00" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

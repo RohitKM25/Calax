@@ -1,6 +1,8 @@
 ﻿using Calax.UWP.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -26,33 +28,80 @@ namespace Calax.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public MainPageViewModel ViewModel { get; set; }
+        public MainPageModel ViewModel { get; set; }
+        public readonly Dictionary<string, Type> Pages = new Dictionary<string, Type>() {
+            { "Calculator",typeof(CalculatorPage)},
+            { "Slab Sets",typeof(SlabSetsPage)},
+            { "New Slab Set",typeof(NewSlabSetPage)},
+        };
         public MainPage()
         {
-            this.InitializeComponent(); 
+            this.InitializeComponent();
+            ViewModel = new MainPageModel();
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.ExtendViewIntoTitleBar = true;
             Window.Current.SetTitleBar(AppTitleBar);
-
-            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-            localSettings.Values.Clear();
-            if (FSManager.GetSlabSetsFolderSetting() == "")
-                FSManager.InitSettingsAndFolder().Wait();
-            ViewModel = new MainPageViewModel(FSManager.GetDeducersFromFiles().Result, FSManager.GetSlabSetsFolderSetting());
+            if (FSManager.GetSlabSetsFolderTokenSetting() == "")
+                _init();
+            else
+                SelectNavigationViewDefaultPage();
         }
 
-        private async void _slabSetsFolderChooseFolderButton_Click(object sender, RoutedEventArgs e)
+        private void _mainNavigationView_SelectionChanged(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
         {
-            var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-            folderPicker.FileTypeFilter.Add("*");
-
-            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
+            var value = (args.SelectedItem as Microsoft.UI.Xaml.Controls.NavigationViewItem).Content as string;
+            if (!args.IsSettingsSelected && Pages.ContainsKey(value))
             {
-                FSManager.SetSlabSetsFolderSetting(folder.Path);
-                this.ViewModel.SlabSetsFolderPath = folder.Path;
+                NavigationViewContentFrame.Navigate(Pages[value]);
+                ViewModel.NavigationHeader = value;
             }
         }
+        private void _navigationViewContentFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+        }
+
+        //private async void _slabSetsFolderChooseFolderButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var folderPicker = new Windows.Storage.Pickers.FolderPicker();
+        //    folderPicker.FileTypeFilter.Add("*");
+
+        //    StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+        //    if (folder != null)
+        //    {
+        //        var token = Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(folder);
+        //        FSManager.SetSlabSetsFolderSetting(token);
+        //    }
+        //}
+
+        private async void _init()
+        {
+            ContentDialog dialog = new ContentDialog();
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+            dialog.Title = "Choose Tax Slabs Folder";
+            dialog.PrimaryButtonText = "Ok";
+            dialog.DefaultButton = ContentDialogButton.Primary;
+            dialog.Content = new InitialiseDialog();
+
+            var result = await dialog.ShowAsync();
+        tryagain:
+            if (!(result == ContentDialogResult.Primary && FSManager.GetSlabSetsFolderTokenSetting() != null))
+            {
+                dialog.Title = "REQUIRED: Choose Tax Slabs Folder";
+                result = await dialog.ShowAsync();
+                goto tryagain;
+            }
+            SelectNavigationViewDefaultPage();
+        }
+
+        private void SelectNavigationViewDefaultPage()
+        {
+
+            MainNavigationView.SelectedItem = MainNavigationView.MenuItems.ToList().Find((ni) => (ni as Microsoft.UI.Xaml.Controls.NavigationViewItem).Tag as string == "Calculator");
+        }
+
     }
 }

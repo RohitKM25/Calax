@@ -1,0 +1,40 @@
+﻿<Page
+    x:Class="Calax.UWP.CalculatorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Calax.UWP"
+    xmlns:models="using:Calax.UWP.Models"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <StackPanel Padding="16" Spacing="16">
+        <StackPanel>
+            <StackPanel Spacing="12" Padding="6" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="For Year"/>
+                <ComboBox IsEnabled="{x:Bind ViewModel.IsForYearEnabled,Mode=OneWay}" MinWidth="200" VerticalAlignment="Center" ItemsSource="{x:Bind ViewModel.ForYears,Mode=OneWay}"  SelectedItem="{x:Bind ViewModel.SelectedForYear,Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Spacing="12" Padding="6" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Regime"/>
+                <ComboBox IsEnabled="{x:Bind ViewModel.IsRegimesEnabled,Mode=OneWay}" MinWidth="200" VerticalAlignment="Center" ItemsSource="{x:Bind ViewModel.Regimes,Mode=OneWay}"  SelectedItem="{x:Bind ViewModel.SelectedRegime,Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Spacing="12" Padding="6" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Total Gross Income"/>
+                <muxc:NumberBox IsEnabled="{x:Bind ViewModel.IsNumFieldsEnabled,Mode=OneWay}" MinWidth="200" VerticalAlignment="Center" Value="{x:Bind ViewModel.TotalGrossIncome,Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Spacing="12" Padding="6" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Total Deduction"/>
+                <muxc:NumberBox IsEnabled="{x:Bind ViewModel.IsNumFieldsEnabled,Mode=OneWay}" MinWidth="200" VerticalAlignment="Center"  Value="{x:Bind ViewModel.TotalDeduction,Mode=TwoWay}"/>
+            </StackPanel>
+            <Button Click="_clearFormButton_Click">
+                Clear
+            </Button>
+        </StackPanel>
+        <StackPanel>
+            <TextBlock Text="Calculated Tax" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+            <TextBlock Text="{x:Bind ViewModel.CalculatedTax,Mode=OneWay}" FontWeight="Bold" Style="{ThemeResource SubheaderTextBlockStyle}" Foreground="{ThemeResource SystemAccentColor}"/>
+        </StackPanel>
+    </StackPanel>
+</Page>
