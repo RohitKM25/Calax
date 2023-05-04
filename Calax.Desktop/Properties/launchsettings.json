@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "Calax.Desktop (Unpackaged)": {
+        "commandName": "Project"
+      },
+      "Calax.Desktop (Package)": {
+        "commandName": "MsixPackage"
+      }
+    }
+}
