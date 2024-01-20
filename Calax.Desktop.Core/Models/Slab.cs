@@ -4,6 +4,10 @@ namespace Calax.Desktop.Core.Models;
 
 public class Slab
 {
+    public Slab()
+    {
+    }
+
     public Slab(SlabRange range, double percent)
     {
         Range = range;

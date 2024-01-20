@@ -101,11 +101,11 @@ public class MainViewModel : ObservableRecipient
         return val == selectedRegime;
     }
 
-    public static bool CheckFieldEnabled(string fieldName, object value)
+    public static bool CheckFieldEnabled(string fieldName, object value, string? regimeVal=null)
     {
         return fieldName switch
         {
-            "regimes" => (value as ObservableCollection<string>).Count > 0,
+            "regimes" => (value as ObservableCollection<string>).Count > 0 && (value as ObservableCollection<string>).Contains(regimeVal??""),
             "numfield" => (value as string) != null,
             _ => false,
         };
